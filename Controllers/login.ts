@@ -36,7 +36,7 @@ const loginController = async (req: Request , res: Response) => {
         logger.info("Successfuly loggedIn.")
         return res.status(202).json({message: "Logged in successfuly"});
         
-        //add and generate access and refresh token
+
 
     } catch (error) {
         logger.error(`Error in logging in controller: ${error}`);
