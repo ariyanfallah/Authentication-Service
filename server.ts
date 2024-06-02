@@ -6,6 +6,7 @@ import { mongoDB } from './Configs/mongoDB';
 import logger from './Configs/logger'
 
 import registerRouter from './Routes/register';
+import loginRouter from './Routes/login'
 
 const app = express();
 
@@ -21,6 +22,7 @@ mongoose.connect(`mongodb://${mongoDB.host}:${mongoDB.port}/${mongoDB.name}${mon
   .catch(err => console.log(err));
 
 app.use("/auth" , registerRouter);
+app.use("/auth" , loginRouter)
 
 app.listen(port, () => {
   logger.info(`Server is running on port ${port}`);

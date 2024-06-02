@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import logger from "../Configs/logger";
-import Participant from "../Models/Participant";
 import bcrypt from "bcrypt";
 import {validateEmail} from "../Utils/validateEmail";
+import User from "../Models/User";
 
 const register = async (req:Request , res: Response) => {
     logger.info("Initiating registration process...");
@@ -18,7 +18,7 @@ const register = async (req:Request , res: Response) => {
             return res.status(400).json({message: "Invalid email."});
         }
         
-        const user = await Participant.findOne({email});
+        const user = await User.findOne({email});
         
         if(user){
             logger.warn("Email already exists.");
@@ -33,7 +33,7 @@ const register = async (req:Request , res: Response) => {
             logger.warn("Error in hashing password.");
             return res.status(500).json({message: "Internal server error."});
         }
-        const newUser = new Participant({
+        const newUser = new User({
             name,
             email,
             hashedPassword

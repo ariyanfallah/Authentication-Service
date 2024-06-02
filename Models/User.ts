@@ -1,11 +1,11 @@
 import mongoose, { Schema } from "mongoose";
 
-const ParticipantSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
     name: { type: String, required: true},
     email: { type: String, required: true, unique: true },
     hashedPassword: { type: String, required: true },
   });
   
-  const Participant = mongoose.model('Participant', ParticipantSchema);
+  const User = mongoose.model('Participant', UserSchema);
   
-  export default Participant;
+  export default User;
