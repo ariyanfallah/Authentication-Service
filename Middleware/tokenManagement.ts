@@ -1,15 +1,15 @@
 import { NextFunction, Request, Response } from "express";
-import jwt from "jsonwebtoken";
 import logger from "../Configs/logger";
 import { generateAccessToken, generateRefreshToken } from "../Utils/tokenGenerator";
+import { tokenVerify } from "../Utils/tokenVerify";
 
 const tokenAuthorize = (req: Request, res: Response, next: NextFunction) => {
   logger.info("Initiating token authorization");
   const accessToken = req.cookies["accessToken"];
   const refreshToken = req.cookies["refreshToken"];
 
-  const accessSecret = process.env.ACCESS_TOKEN_SECRET || "";
-  const refreshSecret = process.env.REFRESH_TOKEN_SECRET || "";
+  const accessSecret = process.env.JWT_SECRET || "";
+  const refreshSecret = process.env.JWT_SECRET || "";
 
   if (!accessToken && !refreshToken) {
     logger.error("No tokens provided");
@@ -17,19 +17,21 @@ const tokenAuthorize = (req: Request, res: Response, next: NextFunction) => {
   }
 
   // Verify the access token
-  jwt.verify(accessToken, accessSecret, (err: any, user: any) => {
-    logger.info("Initiated verifying access token");
-    if (err) {
-      // If access token is invalid or expired, try verifying the refresh token
+  let user: any | null;
+  user = tokenVerify(accessToken, accessSecret);
+
+    if(!user) {
       logger.warn("Access token invalid or expired, verifying refresh token");
 
       if (!refreshToken) {
         logger.error("No refresh token provided");
-        return res.status(401).json({ message: "No refresh token provided" });
+        return res.status(401).json({ message: "Unauthorized. No refresh token provided" });
       }
 
-      jwt.verify(refreshToken, refreshSecret, (err: any, user: any) => {
-        if (err) {
+      let user: any | null;
+      user = tokenVerify(refreshToken, refreshSecret);
+
+        if (!user) {
           logger.error("Refresh token invalid or expired");
           return res
             .status(403)
@@ -41,30 +43,35 @@ const tokenAuthorize = (req: Request, res: Response, next: NextFunction) => {
           httpOnly: true,
           secure: true,
         });
-        logger.info("New access token generated from refresh token");
+        logger.info("New access token generated");
 
         const newRefreshToken = generateRefreshToken(user._id);
         res.cookie("refreshToken", newRefreshToken, {
             httpOnly: true,
             secure: true
         });
+        // fetch session if exists
         logger.info("new refreshToken generated");
         next();
-      });
-    } else {
-      // If access token is valid, proceed
-      logger.info("Access token is valid");
-      const newAccessToken = generateAccessToken(user._id);
-      res.cookie("accessToken", newAccessToken, {
-        httpOnly: true,
-        secure: true,
-      });
 
-      next();
     }
+
+
+      
+
+  // If access token is valid, proceed
+  logger.info("Access token is valid");
+  const newAccessToken = generateAccessToken(user._id);
+  res.cookie("accessToken", newAccessToken, {
+    httpOnly: true,
+    secure: true,
   });
+  // fetch session if exists
   next();
+  
 };
 
 
 // we will change this to work with whiteLists
+
+export {tokenAuthorize};

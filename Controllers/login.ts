@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import logger from "../Configs/logger";
 import { validateEmail } from "../Utils/validateEmail";
 import User from "../Models/User";
-import bcrypt from 'bcrypt';
+import argon2 from "argon2";
 
 const loginController = async (req: Request , res: Response) => {
 
@@ -26,7 +26,7 @@ const loginController = async (req: Request , res: Response) => {
             return res.status(401).json({message:"Invalid email or password"})
         }
         
-        const isMatch = await bcrypt.compare(password , user.hashedPassword);
+        const isMatch = await argon2.verify(password , user.hashedPassword);
 
         if(!isMatch){
             logger.warn("Invalid email or password");
