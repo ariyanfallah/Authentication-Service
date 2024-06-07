@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import logger from "../Configs/logger";
 import {validateEmail} from "../Utils/validateEmail";
 import User from "../Models/User";
-import argon2 from "argon2";
+import bcrypt from "bcryptjs"
 
 const register = async (req:Request , res: Response) => {
     logger.info("Initiating registration process...");
@@ -28,21 +28,26 @@ const register = async (req:Request , res: Response) => {
         logger.info("Creating new user...");
 
         // const saltRounds = parseInt(process.env.HASH_SALT_ROUND || "10", 10);
-        const hashedPassword = await argon2.hash(password);
-        if(!hashedPassword){
-            logger.warn("Error in hashing password.");
-            return res.status(500).json({message: "Internal server error."});
-        }
-        const newUser = new User({
-            name,
-            email,
-            hashedPassword
+        // const hashedPassword = await bcrypt.hash(password);
+        bcrypt.genSalt(10, function(err, salt) {
+            bcrypt.hash(password, salt, async (err, hash) => {
+                if(err){
+                    logger.warn("Error in hashing password.");
+                    return res.status(500).json({message: "Internal server error."});
+                }
+                const newUser = new User({
+                    name,
+                    email,
+                    hashedPassword: hash
+                });
+                await newUser.save();
+                logger.info("User created successfully.");
+            });
         });
-        await newUser.save();
-        logger.info("User created successfully.");
+
         return res.status(201).json({message: "User created successfully."});
         
-        
+// add and use session here and login        
 
     } catch (error) {
         logger.warn(`Error in registration process: ${error}`);

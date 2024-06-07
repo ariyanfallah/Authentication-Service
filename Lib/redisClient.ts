@@ -4,17 +4,21 @@ import { Redis } from 'ioredis';
 
 
 const redisCreateClient = (): Redis => {
-    
-    logger.info(`Connecting to Redis at ${REDIS_URI}`);
+    try {
+        logger.info(`Connecting to Redis at ${REDIS_URI}`);
 
-    const redisClient = new Redis(REDIS_URI || '');
+        const redisClient = new Redis(REDIS_URI || '');
 
-    logger.info(redisClient);
+        logger.info(redisClient);
 
-    redisClient.on('error', (err) => logger.warn(`Failed to connect to Redis: ${err}`));
+        redisClient.on('error', (err) => logger.warn(`Failed to connect to Redis: ${err}`));
 
-    redisClient.on('connect', () => logger.info('Connected to Redis...'));
+        redisClient.on('connect', () => logger.info('Connected to Redis...'));
 
-    return redisClient;
+        return redisClient;
+    } catch (error) {
+        logger.error(`Error in connecting to Redis: ${error}`);
+        throw new Error('Error in connecting to Redis');
+    }
 }
 export { redisCreateClient };
