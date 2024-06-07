@@ -29,18 +29,14 @@ mongoose.connect(`mongodb://${mongoDB.host}:${mongoDB.port}/${mongoDB.name}${mon
 
 
 const redisClient = redisCreateClient();
-redisClient.on('error', (err: Error) => logger.warn(`Failed to connect to Redis: ${err}`));
-redisClient.on('connect', () => logger.info('Connected to Redis...'));
   
 app.use(session({
 secret: process.env.SESSION_SECRET || 'mySecret',
 resave: false,
 saveUninitialized: false,
 store: new RedisStore({ client: redisClient }),
-cookie: { maxAge: 86400000 } // 1 day in milliseconds
+cookie: { maxAge: 1000 * 60 * 45 }
 }));
-
-
 
 app.use("/auth" , registerRouter);
 app.use("/auth" , loginRouter)

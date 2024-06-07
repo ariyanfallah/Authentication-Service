@@ -1,19 +1,20 @@
-import { createClient } from 'redis';
 import { REDIS_URI } from '../Configs/redisConfig';
 import logger from '../Configs/logger';
 import { Redis } from 'ioredis';
 
 
-const redisCreateClient = () => {
-    return new Redis(REDIS_URI)
+const redisCreateClient = (): Redis => {
+    
+    logger.info(`Connecting to Redis at ${REDIS_URI}`);
+
+    const redisClient = new Redis(REDIS_URI || '');
+
+    logger.info(redisClient);
+
+    redisClient.on('error', (err) => logger.warn(`Failed to connect to Redis: ${err}`));
+
+    redisClient.on('connect', () => logger.info('Connected to Redis...'));
+
+    return redisClient;
 }
-
-// redisClient.on('error', (err) => logger.warn(`Failed to connect to Redis: ${err}`));
-
-// (async () => {
-//     await redisClient.connect();
-//     redisClient.on('connect'  , () => logger.info('Connected to Redis...'));
-// })();
-
-// export default redisClient;
 export { redisCreateClient };
