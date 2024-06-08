@@ -9,8 +9,6 @@ const redisCreateClient = (): Redis => {
 
         const redisClient = new Redis(REDIS_URI || '');
 
-        logger.info(redisClient);
-
         redisClient.on('error', (err) => logger.warn(`Failed to connect to Redis: ${err}`));
 
         redisClient.on('connect', () => logger.info('Connected to Redis...'));

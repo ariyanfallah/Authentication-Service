@@ -1,19 +1,24 @@
 import jwt from "jsonwebtoken";
+import {Types} from "mongoose";
+import logger from "../Configs/logger";
 
-const generateAccessToken = (userID: string) => {
+
+const generateAccessToken = (userID: Types.ObjectId) => {
+  logger.info("Generating access token");
   const options = {
     expiresIn: process.env.JWT_ACCESS_EXPIRE || "1h",
   };
   const payload = {
-    userID
+    id: userID,
   };
   return `Bearer ${generateToken(options, payload)}`;
 };
 
-const generateRefreshToken = (phoneNumber: string) => {
+const generateRefreshToken = (userID: Types.ObjectId) => {
+  logger.info("Generating refresh token");
   const options = { expiresIn: process.env.JWT_REFRESH_EXPIRE || "72h" };
   const payload = {
-    phoneNumber
+    id: userID
   };
   return `Bearer ${generateToken(options, payload)}`;
 };

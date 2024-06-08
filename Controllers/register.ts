@@ -3,6 +3,7 @@ import logger from "../Configs/logger";
 import {validateEmail} from "../Utils/validateEmail";
 import User from "../Models/User";
 import bcrypt from "bcryptjs"
+import { generateAccessToken, generateRefreshToken } from "../Utils/tokenGenerator";
 
 const register = async (req:Request , res: Response) => {
     logger.info("Initiating registration process...");
@@ -42,11 +43,15 @@ const register = async (req:Request , res: Response) => {
                 });
                 await newUser.save();
                 logger.info("User created successfully.");
+                const accToken = generateAccessToken(newUser._id);
+                const refToken = generateRefreshToken(newUser._id);
+                res.cookie("accessToken", accToken);
+                res.cookie("refreshToken", refToken);
+                return res.status(201).json({message: "User created successfully."});
+
             });
         });
 
-        return res.status(201).json({message: "User created successfully."});
-        
 // add and use session here and login        
 
     } catch (error) {

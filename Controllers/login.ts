@@ -3,10 +3,12 @@ import logger from "../Configs/logger";
 import { validateEmail } from "../Utils/validateEmail";
 import User from "../Models/User";
 import bcrypt from "bcryptjs";
+import { generateAccessToken, generateRefreshToken } from "../Utils/tokenGenerator";
 
 const loginController = async (req: Request , res: Response) => {
 
     try {
+    
         logger.info("Initiating login process...");
         const {email, password} = req.body;
 
@@ -32,7 +34,6 @@ const loginController = async (req: Request , res: Response) => {
                 logger.error(`Error in comparing password ${err}"`);
                 return res.status(500).json({message: "Internal server error"});
             }
-            logger.info(isMatch)
 
             if(!isMatch){
                 logger.warn("Invalid email or password");
@@ -40,6 +41,10 @@ const loginController = async (req: Request , res: Response) => {
             }
 
             logger.info("Successfuly loggedIn.")
+            const accToken = generateAccessToken(user._id);
+            const refToken = generateRefreshToken(user._id);
+            res.cookie("accessToken", accToken);
+            res.cookie("refreshToken", refToken);
             return res.status(202).json({message: "Logged in successfuly"});
         });
        
