@@ -11,6 +11,8 @@ import logger from './Configs/logger'
 
 import registerRouter from './Routes/register';
 import loginRouter from './Routes/login'
+import logoutRouter from './Routes/logout'
+import authRouter from './Routes/auth'
 
 const app = express();
 
@@ -28,7 +30,7 @@ mongoose.connect(`mongodb://${mongoDB.host}:${mongoDB.port}/${mongoDB.name}${mon
   .catch(err => console.log(err));
 
 
-const redisClient = redisCreateClient();
+export const redisClient = redisCreateClient();
   
 app.use(session({
 secret: process.env.SESSION_SECRET || 'mySecret',
@@ -39,7 +41,9 @@ cookie: { maxAge: 1000 * 60 * 45 }
 }));
 
 app.use("/auth" , registerRouter);
-app.use("/auth" , loginRouter)
+app.use("/auth" , loginRouter);
+app.use("/auth" , logoutRouter);
+app.use("/auth" , authRouter);
 
 app.listen(port, () => {
   logger.info(`Server is running on port ${port}`);
