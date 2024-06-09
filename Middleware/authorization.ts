@@ -8,6 +8,11 @@ const authorization = async (req: Request, res: Response, next: NextFunction) =>
     try {
         const accessToken = req.cookies["accessToken"];
         const refreshToken = req.cookies["refreshToken"];
+        const isBlacklist = await redisClient.lrange("blacklist" , 0 , -1);
+        if(isBlacklist.includes(accessToken) || isBlacklist.includes(refreshToken)){
+            logger.warn("Token is blacklisted")
+            return res.status(401).json({message: "Unauthorized"});
+        }
 
         if (!accessToken || !tokenVerify(accessToken)) {
             if(!refreshToken){

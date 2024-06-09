@@ -47,8 +47,8 @@ const logoutController = async (req: Request, res: Response) => {
             logger.warn(`Blacklist status ...${tokenBlacklistStatus}`);
         }
 
-        // res.clearCookie("accessToken");
-        // res.clearCookie("refreshToken");
+        res.clearCookie("accessToken");
+        res.clearCookie("refreshToken");
         logger.info("Logged out successfully...");
         return res.status(200).json({message: "Logged out successfully"});
     } catch (error) {
