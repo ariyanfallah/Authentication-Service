@@ -27,6 +27,7 @@ const logoutController = async (req: Request, res: Response) => {
     
             res.clearCookie("accessToken");
             res.clearCookie("refreshToken");
+            logger.info("Logged out successfully...");
             return res.status(200).json({message: "Logged out successfully"});
         }
 
@@ -35,16 +36,23 @@ const logoutController = async (req: Request, res: Response) => {
         }
 
         if (accessToken) {
-            await redisClient.set(`blacklist:${accessToken}`, 'true', 'EX', 60 * 60);
+            await redisClient.rpush(`blacklist`, accessToken);
+            const tokenBlacklistStatus = await redisClient.lrange(`blacklist` , 0 , -1);
+            logger.warn(`Blacklist status...${tokenBlacklistStatus}`);
+        
         }
         if (refreshToken) {
-            await redisClient.set(`blacklist:${refreshToken}`, 'true', 'EX', 60 * 60);
+            await redisClient.rpush(`blacklist` , refreshToken);
+            const tokenBlacklistStatus = await redisClient.lrange(`blacklist` , 0 , -1);
+            logger.warn(`Blacklist status ...${tokenBlacklistStatus}`);
         }
 
-        res.clearCookie("accessToken");
-        res.clearCookie("refreshToken");
+        // res.clearCookie("accessToken");
+        // res.clearCookie("refreshToken");
+        logger.info("Logged out successfully...");
         return res.status(200).json({message: "Logged out successfully"});
     } catch (error) {
+        logger.error(`Internal server error: ${error}`)
         return res.status(500).json({message: "Internal server error"});
     }
 };

@@ -19,14 +19,9 @@ const authorization = async (req: Request, res: Response, next: NextFunction) =>
                 return res.status(401).json({message: "Unauthorized"});
             }
 
-            const isBlacklisted = await redisClient.get(`blacklist:${accessToken}`);
-            logger.warn(isBlacklisted);
-            if (isBlacklisted) {
-                return res.status(401).json({ message: "Token is blacklisted. Please log in again." });
-            }
-            const isBlacklistedRefresh = await redisClient.get(`blacklist:${refreshToken}`);
-            logger.warn(isBlacklistedRefresh);
-            if (isBlacklistedRefresh) {
+            const isBlacklisted = await redisClient.lrange("blacklist" , 0 , -1);
+
+            if (isBlacklisted.includes(accessToken) || isBlacklisted.includes(refreshToken)){
                 return res.status(401).json({ message: "Token is blacklisted. Please log in again." });
             }
             const user = await tokenVerify(refreshToken);

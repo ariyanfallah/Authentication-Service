@@ -2,8 +2,9 @@ import { NextFunction, Request, Response } from "express";
 import logger from "../Configs/logger";
 import { generateAccessToken, generateRefreshToken } from "../Utils/tokenGenerator";
 import { tokenVerify } from "../Utils/tokenVerify";
+import { redisClient } from "../server";
 
-const tokenManagement = (req: Request, res: Response, next: NextFunction) => {
+const tokenManagement = async (req: Request, res: Response, next: NextFunction) => {
   logger.info("Initiating token authorization");
   const accessToken = req.cookies["accessToken"];
   const refreshToken = req.cookies["refreshToken"];
@@ -16,6 +17,12 @@ const tokenManagement = (req: Request, res: Response, next: NextFunction) => {
   // Verify the access token
   let user: any | null;
   logger.info("Verifying access token");
+  const tokenBlacklist = await redisClient.lrange(`blacklist` , 0 , -1);
+  if(tokenBlacklist.includes(accessToken) || tokenBlacklist.includes(refreshToken)){
+    logger.warn("Token Blacklisted");
+    return next();
+  }
+
 
   user = tokenVerify(accessToken);
 
