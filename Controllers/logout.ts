@@ -36,15 +36,22 @@ const logoutController = async (req: Request, res: Response) => {
         }
 
         if (accessToken) {
-            await redisClient.rpush(`blacklist`, accessToken);
-            const tokenBlacklistStatus = await redisClient.lrange(`blacklist` , 0 , -1);
-            logger.warn(`Blacklist status...${tokenBlacklistStatus}`);
-        
+            try {
+                await redisClient.rpush(`blacklist`, accessToken);
+                
+            } catch (error) {
+                logger.error(`Internal server error: ${error}`);
+                return res.status(500).json({message: "Internal server error"});
+            }
         }
         if (refreshToken) {
-            await redisClient.rpush(`blacklist` , refreshToken);
-            const tokenBlacklistStatus = await redisClient.lrange(`blacklist` , 0 , -1);
-            logger.warn(`Blacklist status ...${tokenBlacklistStatus}`);
+            try {
+                await redisClient.rpush(`blacklist`, refreshToken);
+                
+            } catch (error) {
+                logger.error(`Internal server error: ${error}`);
+                return res.status(500).json({message: "Internal server error"});
+            }
         }
 
         res.clearCookie("accessToken");
