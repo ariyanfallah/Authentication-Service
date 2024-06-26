@@ -9,7 +9,7 @@ const redisCreateClient = (): Redis => {
 
         // let lastLoggedTime: any = new Date().getTime();
 
-        const redisClient = new Redis(REDIS_URI || '');
+        const redisClient = new Redis(REDIS_URI || 'redis://redis:6379');
 
         let lastLoggedAt = 0;
 

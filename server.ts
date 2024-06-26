@@ -25,10 +25,13 @@ const port = process.env.APP_PORT || 3000;
 app.set('trust proxy', 1);
 
 // mongoose.connect(`mongodb://${mongoDB.user}:${mongoDB.pass}@${mongoDB.host}:${mongoDB.port}/${mongoDB.name}${mongoDB.link}`)
-mongoose.connect(`mongodb://${mongoDB.host}:${mongoDB.port}/${mongoDB.name}${mongoDB.link}`)
-  .then(() => logger.info('Connected to MongoDB...'))
-  .catch(err => console.log(err));
+// mongoose.connect(`mongodb://${mongoDB.host}:${mongoDB.port}/${mongoDB.name}${mongoDB.link}`)
+//   .then(() => logger.info('Connected to MongoDB...'))
+//   .catch(err => console.log(err));
 
+mongoose.connect(mongoDB.URI || "mongodb://mongo:27017/Authentication")
+.then(() => logger.info("Connected to MongoDB..."))
+.catch((err) => logger.warn(`Error connecting to MongoDB ${err}`))
 
 export const redisClient = redisCreateClient();
   
