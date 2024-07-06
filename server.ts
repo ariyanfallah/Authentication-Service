@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-const port = process.env.APP_PORT || 3000;
+const port = process.env.APP_PORT || 3008;
 
 app.set('trust proxy', 1);
 
@@ -43,10 +43,10 @@ store: new RedisStore({ client: redisClient }),
 cookie: { maxAge: 1000 * 60 * 45 }
 }));
 
-app.use("/auth" , registerRouter);
-app.use("/auth" , loginRouter);
-app.use("/auth" , logoutRouter);
-app.use("/auth" , authRouter);
+app.use("/" , registerRouter);
+app.use("/" , loginRouter);
+app.use("/" , logoutRouter);
+app.use("/" , authRouter);
 
 app.listen(port, () => {
   logger.info(`Server is running on port ${port}`);

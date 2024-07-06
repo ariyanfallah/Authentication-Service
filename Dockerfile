@@ -1,4 +1,4 @@
-FROM node:20
+FROM node:alpine
 
 WORKDIR /auth
 
@@ -8,7 +8,7 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 3000
+EXPOSE 3008
 
 ENV NAME AuthenticationService
 
