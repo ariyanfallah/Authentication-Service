@@ -3,22 +3,24 @@ import {Types} from "mongoose";
 import logger from "../Configs/logger";
 
 
-const generateAccessToken = (userID: Types.ObjectId) => {
+const generateAccessToken = (userID: Types.ObjectId , email: string) => {
   logger.info("Generating access token");
   const options = {
     expiresIn: process.env.JWT_ACCESS_EXPIRE || "1h",
   };
   const payload = {
     id: userID,
+    email,
   };
   return `Bearer ${generateToken(options, payload)}`;
 };
 
-const generateRefreshToken = (userID: Types.ObjectId) => {
+const generateRefreshToken = (userID: Types.ObjectId , email: string) => {
   logger.info("Generating refresh token");
   const options = { expiresIn: process.env.JWT_REFRESH_EXPIRE || "72h" };
   const payload = {
-    id: userID
+    id: userID,
+    email,
   };
   return `Bearer ${generateToken(options, payload)}`;
 };

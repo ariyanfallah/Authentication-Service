@@ -43,8 +43,8 @@ const register = async (req:Request , res: Response) => {
                 });
                 await newUser.save();
                 logger.info("User created successfully.");
-                const accToken = generateAccessToken(newUser._id);
-                const refToken = generateRefreshToken(newUser._id);
+                const accToken = generateAccessToken(newUser._id , email);
+                const refToken = generateRefreshToken(newUser._id , email);
                 res.cookie("accessToken", accToken);
                 res.cookie("refreshToken", refToken);
                 return res.status(201).json({message: "User created successfully."});
