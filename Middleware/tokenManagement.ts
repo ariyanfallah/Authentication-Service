@@ -43,14 +43,14 @@ const tokenManagement = async (req: Request, res: Response, next: NextFunction) 
           logger.warn("Refresh token invalid or expired");
           return next();
         }
-        const newAccessToken = generateAccessToken(user.id);
+        const newAccessToken = generateAccessToken(user._id , user.email);
 
         res.cookie("accessToken", newAccessToken, {
           httpOnly: true,
           secure: true,
         });
         logger.info("New access token generated");
-        const newRefreshToken = generateRefreshToken(user.id);
+        const newRefreshToken = generateRefreshToken(user._id , user.email);
         res.cookie("refreshToken", newRefreshToken, {
             httpOnly: true,
             secure: true
@@ -62,12 +62,12 @@ const tokenManagement = async (req: Request, res: Response, next: NextFunction) 
     }
   // If access token is valid, proceed
   logger.info("Access token is valid");
-  const newAccessToken = generateAccessToken(user._id);
+  const newAccessToken = generateAccessToken(user._id , user.email);
   res.cookie("accessToken", newAccessToken, {
     httpOnly: true,
     secure: true,
   });
-  const newRefreshToken = generateRefreshToken(user._id);
+  const newRefreshToken = generateRefreshToken(user._id , user.email);
   res.cookie("refreshToken", newRefreshToken, {
     httpOnly: true,
     secure: true,

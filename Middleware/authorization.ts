@@ -34,12 +34,12 @@ const authorization = async (req: Request, res: Response, next: NextFunction) =>
                 logger.warn("Unauthorized");
                 return res.status(401).json({message: "Unauthorized"});
             }
-            const newAccessToken = generateAccessToken(user.id);
+            const newAccessToken = generateAccessToken(user.id , user.email);
             res.cookie("accessToken", newAccessToken, {
                 httpOnly: true,
                 secure: true,
             });
-            const newRefreshToken = generateRefreshToken(user.id);
+            const newRefreshToken = generateRefreshToken(user.id, user.email);
             res.cookie("refreshToken", newRefreshToken, {
                 httpOnly: true,
                 secure: true
