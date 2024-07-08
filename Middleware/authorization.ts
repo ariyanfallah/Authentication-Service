@@ -67,7 +67,7 @@ const authorization = async (req: Request, res: Response, next: NextFunction) =>
                 secure: true
             });
             logger.info("Precedure finished successfully")
-            return res.status(200).json({message: "Already Logged In"});
+            return res.status(200).json({message: `Already Logged In As ${user.email} `});
         }
         
         logger.info("accessToken existed and was valid")
@@ -79,10 +79,8 @@ const authorization = async (req: Request, res: Response, next: NextFunction) =>
             logger.warn("Unauthorized");
             return res.status(401).json({message: "Unauthorized"});
         }
-        logger.info(`email: ${user.email}`);
-        logger.info(`id: ${user._id}`);
 
-        return res.status(200).json({message: "Already Logged In"});
+        return res.status(200).json({message: `Already Logged In As: ${user.email}`});
 
     } catch (error) {
         logger.error(`Error authorizing : ${error}`)
