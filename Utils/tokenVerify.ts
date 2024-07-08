@@ -21,13 +21,12 @@ interface JwtPayload {
           const payload = jwt.verify(token, tokenSecret) as JwtPayload;
   
           logger.info("Token verified successfully");
-          logger.info(`payload: ${JSON.stringify(payload)}`);
           
           return payload;
   
       } catch (error) {
           if (error instanceof jwt.JsonWebTokenError) {
-              logger.warn(`Failed to verify token: ${error.message}`);
+              logger.warn(`Failed to verify token: ${error}`);
               return null;
           } else {
               logger.error(`Error verifying token: ${error}`);
