@@ -41,11 +41,12 @@ const loginController = async (req: Request , res: Response) => {
             }
 
             logger.info("Successfuly loggedIn.")
-            const accToken = generateAccessToken(user._id , user.email);
-            const refToken = generateRefreshToken(user._id, user.email);
+            const accToken = generateAccessToken(String(user._id) , user.email);
+            const refToken = generateRefreshToken(String(user._id), user.email);
             res.cookie("accessToken", accToken);
             res.cookie("refreshToken", refToken);
             user.lastLogin = new Date();
+            user.save();
             return res.status(202).json({message: "Logged in successfuly"});
         });
        

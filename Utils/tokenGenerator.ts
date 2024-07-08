@@ -3,7 +3,7 @@ import {Types} from "mongoose";
 import logger from "../Configs/logger";
 
 
-const generateAccessToken = (userID: Types.ObjectId , email: string) => {
+const generateAccessToken = (userID: string , email: string) => {
   logger.info("Generating access token");
   const options = {
     expiresIn: process.env.JWT_ACCESS_EXPIRE || "1h",
@@ -15,7 +15,7 @@ const generateAccessToken = (userID: Types.ObjectId , email: string) => {
   return `Bearer ${generateToken(options, payload)}`;
 };
 
-const generateRefreshToken = (userID: Types.ObjectId , email: string) => {
+const generateRefreshToken = (userID: string , email: string) => {
   logger.info("Generating refresh token");
   const options = { expiresIn: process.env.JWT_REFRESH_EXPIRE || "72h" };
   const payload = {
@@ -28,6 +28,7 @@ const generateRefreshToken = (userID: Types.ObjectId , email: string) => {
 const generateToken = (options: object, payload: object) => {
   const secretKey = process.env.JWT_SECRET || "";
   const token = jwt.sign(payload, secretKey, options);
+  logger.info("Token generated");
   return token;
 };
 

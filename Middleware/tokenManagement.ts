@@ -37,7 +37,6 @@ const tokenManagement = async (req: Request, res: Response, next: NextFunction) 
       let user: any | null;
       logger.info("Verifying refresh token");
       user = tokenVerify(refreshToken);
-      logger.info(user);
 
         if (!user) {
           logger.warn("Refresh token invalid or expired");
@@ -74,8 +73,5 @@ const tokenManagement = async (req: Request, res: Response, next: NextFunction) 
   });
   return res.status(200).json({message: "Already Logged In"});
 };
-
-
-// we will change this to work with whiteLists
 
 export {tokenManagement};
