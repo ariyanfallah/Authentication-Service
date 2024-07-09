@@ -4,6 +4,7 @@ import {validateEmail} from "../Utils/validateEmail";
 import User from "../Models/User";
 import bcrypt from "bcryptjs"
 import { generateAccessToken, generateRefreshToken } from "../Utils/tokenGenerator";
+import mongoose from "mongoose";
 
 const register = async (req:Request , res: Response) => {
     logger.info("Initiating registration process...");
@@ -28,6 +29,8 @@ const register = async (req:Request , res: Response) => {
         
         logger.info("Creating new user...");
 
+        const newId = new mongoose.Types.ObjectId();
+
         // const saltRounds = parseInt(process.env.HASH_SALT_ROUND || "10", 10);
         // const hashedPassword = await bcrypt.hash(password);
         bcrypt.genSalt(10, function(err, salt) {
@@ -39,7 +42,8 @@ const register = async (req:Request , res: Response) => {
                 const newUser = new User({
                     name,
                     email,
-                    hashedPassword: hash
+                    hashedPassword: hash,
+                    userId: newId
                 });
                 await newUser.save();
                 logger.info("User created successfully.");

@@ -1,6 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 
 const UserSchema = new mongoose.Schema({
+    userId: { type: mongoose.Types.ObjectId , unique: true , required: true },
     name: { type: String, required: true},
     email: { type: String, required: true, unique: true },
     hashedPassword: { type: String, required: true },
