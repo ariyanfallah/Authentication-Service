@@ -41,8 +41,8 @@ const loginController = async (req: Request , res: Response) => {
             }
 
             logger.info("Successfuly loggedIn.")
-            const accToken = generateAccessToken(String(user._id) , user.email);
-            const refToken = generateRefreshToken(String(user._id), user.email);
+            const accToken = generateAccessToken(String(user.userId) , user.email);
+            const refToken = generateRefreshToken(String(user.userId), user.email);
             res.cookie("accessToken", accToken);
             res.cookie("refreshToken", refToken);
             user.lastLogin = new Date();

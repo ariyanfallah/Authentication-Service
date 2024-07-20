@@ -3,7 +3,7 @@ import logger from "../Configs/logger";
 
 
 interface JwtPayload {
-    _id: string;
+    userId: string;
     email: string;
     // Add other payload properties as needed
   }

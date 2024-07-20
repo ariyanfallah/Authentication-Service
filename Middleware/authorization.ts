@@ -47,7 +47,9 @@ const authorization = async (req: Request, res: Response, next: NextFunction) =>
             }
 
             logger.info("Fetching user with verifying refresh token")
+
             const user = tokenVerify(refreshToken);
+
             if(!user){
                 logger.info("User didn't exist")
                 logger.warn("Unauthorized");
@@ -55,13 +57,13 @@ const authorization = async (req: Request, res: Response, next: NextFunction) =>
             }
             
             logger.info("Generating new AccessToken")
-            const newAccessToken = generateAccessToken(user._id , user.email);
+            const newAccessToken = generateAccessToken(user.userId , user.email);
             res.cookie("accessToken", newAccessToken, {
                 httpOnly: true,
                 secure: true,
             });
             logger.info("Generating new RefreshToken")
-            const newRefreshToken = generateRefreshToken(user._id, user.email);
+            const newRefreshToken = generateRefreshToken(user.userId, user.email);
             res.cookie("refreshToken", newRefreshToken, {
                 httpOnly: true,
                 secure: true

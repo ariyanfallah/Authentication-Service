@@ -9,7 +9,7 @@ const generateAccessToken = (userID: string , email: string) => {
     expiresIn: process.env.JWT_ACCESS_EXPIRE || "1h",
   };
   const payload = {
-    id: userID,
+    userID,
     email,
   };
   return `Bearer ${generateToken(options, payload)}`;
@@ -19,7 +19,7 @@ const generateRefreshToken = (userID: string , email: string) => {
   logger.info("Generating refresh token");
   const options = { expiresIn: process.env.JWT_REFRESH_EXPIRE || "72h" };
   const payload = {
-    id: userID,
+    userID,
     email,
   };
   return `Bearer ${generateToken(options, payload)}`;
