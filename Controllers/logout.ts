@@ -5,6 +5,7 @@ import { verify } from "jsonwebtoken";
 import logger from "../Configs/logger";
 
 const logoutController = async (req: Request, res: Response) => {
+    logger.verbose(`req headers: ${JSON.stringify(req.headers)}`)
     try {
         const accessToken = req.cookies.accessToken;
         const refreshToken = req.cookies.refreshToken;

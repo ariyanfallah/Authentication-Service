@@ -1,5 +1,4 @@
 import jwt from "jsonwebtoken";
-import {Types} from "mongoose";
 import logger from "../Configs/logger";
 
 

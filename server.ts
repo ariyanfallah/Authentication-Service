@@ -14,6 +14,10 @@ import loginRouter from './Routes/login'
 import logoutRouter from './Routes/logout'
 import authRouter from './Routes/auth'
 
+import passwordRouter from './Routes/password'
+
+import cors from 'cors'
+
 const app = express();
 
 app.use(express.json());
@@ -43,10 +47,18 @@ store: new RedisStore({ client: redisClient }),
 cookie: { maxAge: 1000 * 60 * 45 }
 }));
 
+const corsOptions = {
+  origin: 'http://localhost:3000',
+  credentials: true, // Allow credentials (cookies)
+};
+
+app.use(cors(corsOptions));
+
 app.use("/" , registerRouter);
 app.use("/" , loginRouter);
 app.use("/" , logoutRouter);
 app.use("/" , authRouter);
+app.use("/password" , passwordRouter);
 
 app.listen(port, () => {
   logger.info(`Server is running on port ${port}`);

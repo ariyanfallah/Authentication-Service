@@ -34,9 +34,13 @@ const register = async (req:Request , res: Response) => {
         // const saltRounds = parseInt(process.env.HASH_SALT_ROUND || "10", 10);
         // const hashedPassword = await bcrypt.hash(password);
         bcrypt.genSalt(10, function(err, salt) {
+            if(err){
+                logger.warn(`Error in generating salt: ${err}`);
+                return res.status(500).json({message: "Internal server error."});
+            }
             bcrypt.hash(password, salt, async (err, hash) => {
                 if(err){
-                    logger.warn("Error in hashing password.");
+                    logger.warn(`Error in hashing password: ${err}`);
                     return res.status(500).json({message: "Internal server error."});
                 }
                 const newUser = new User({
@@ -55,9 +59,7 @@ const register = async (req:Request , res: Response) => {
 
             });
         });
-
-// add and use session here and login        
-
+        
     } catch (error) {
         logger.warn(`Error in registration process: ${error}`);
         return res.status(500).json({message: "Internal server error."});
