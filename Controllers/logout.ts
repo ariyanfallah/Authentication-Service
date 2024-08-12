@@ -23,11 +23,12 @@ const logoutController = async (req: Request, res: Response) => {
                 await redisClient.set(`blacklist:${accessToken}`, 'true', 'EX', 60 * 60);
             }
             if (refreshToken) {
-                await redisClient.set(`blacklist:${refreshToken}`, 'true', 'EX', 60 * 60);
+                await redisClient.set(`blacklist:${refreshToken}`, 'true', 'EX', 60 * 60 * 72);
             }
     
             res.clearCookie("accessToken");
             res.clearCookie("refreshToken");
+            
             logger.info("Logged out successfully...");
             return res.status(200).json({message: "Logged out successfully"});
         }

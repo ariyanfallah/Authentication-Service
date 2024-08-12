@@ -47,7 +47,8 @@ const register = async (req:Request , res: Response) => {
                     name,
                     email,
                     hashedPassword: hash,
-                    userId: newId
+                    userId: newId,
+                    isRegistered: true
                 });
                 await newUser.save();
                 logger.info("User created successfully.");

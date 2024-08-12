@@ -8,6 +8,7 @@ const UserSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date},
     lastLogin: { type: Date},
+    isRegistered: {type: Boolean}
   });
   
   const User = mongoose.model('Participant', UserSchema);

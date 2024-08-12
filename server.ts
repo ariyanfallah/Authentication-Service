@@ -40,7 +40,7 @@ mongoose.connect(mongoDB.URI || "mongodb://mongo:27017/Authentication")
 export const redisClient = redisCreateClient();
   
 app.use(session({
-secret: process.env.SESSION_SECRET || 'mySecret',
+secret: process.env.SESSION_SECRET || '',
 resave: false,
 saveUninitialized: false,
 store: new RedisStore({ client: redisClient }),
