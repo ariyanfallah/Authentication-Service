@@ -25,8 +25,8 @@ const loginController = async (req: Request , res: Response) => {
         const user = await User.findOne({email}); 
         
         if(!user){
-            logger.warn("Invalid email or password");
-            return res.status(401).json({message:"Invalid email or password"})
+            logger.warn("User doesn't exist");
+            return res.status(404).json({message:"User doesn't exist"})
         }
         
         bcrypt.compare(password, user.hashedPassword, (err, isMatch) => {
@@ -37,17 +37,25 @@ const loginController = async (req: Request , res: Response) => {
 
             if(!isMatch){
                 logger.warn("Invalid email or password");
-                return res.status(401).json({message:"Invalid email or password"});
+                return res.status(406).json({message:"Invalid email or password"});
             }
 
             logger.info("Successfuly loggedIn.")
-            const accToken = generateAccessToken(String(user.userId) , user.email);
-            const refToken = generateRefreshToken(String(user.userId), user.email);
-            res.cookie("accessToken", accToken);
-            res.cookie("refreshToken", refToken);
+            const accToken = generateAccessToken(String(user.userId) , user.email , user.name);
+            const refToken = generateRefreshToken(String(user.userId), user.email , user.name);
+            res.cookie("accessToken", accToken, {
+                httpOnly: true,
+                secure: false,
+                sameSite: "lax"
+              });
+              res.cookie("refreshToken", refToken, {
+                httpOnly: true,
+                secure: false,
+                sameSite: "lax"
+              });
             user.lastLogin = new Date();
             user.save();
-            return res.status(202).json({message: "Logged in successfuly"});
+            return res.status(202).json({message: "Logged in successfuly" , accessToken:accToken, refreshToken:refToken});
         });
        
     } catch (error) {

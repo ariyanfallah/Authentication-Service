@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import logger from "../Configs/logger";
 
 
-const generateAccessToken = (userId: string , email: string) => {
+const generateAccessToken = (userId: string , email: string , name: string) => {
   logger.info("Generating access token");
   const options = {
     expiresIn: process.env.JWT_ACCESS_EXPIRE || "1h",
@@ -10,16 +10,18 @@ const generateAccessToken = (userId: string , email: string) => {
   const payload = {
     userId,
     email,
+    name
   };
   return `Bearer ${generateToken(options, payload)}`;
 };
 
-const generateRefreshToken = (userId: string , email: string) => {
+const generateRefreshToken = (userId: string , email: string , name: string) => {
   logger.info("Generating refresh token");
   const options = { expiresIn: process.env.JWT_REFRESH_EXPIRE || "72h" };
   const payload = {
     userId,
     email,
+    name
   };
   return `Bearer ${generateToken(options, payload)}`;
 };

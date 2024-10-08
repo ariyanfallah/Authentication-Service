@@ -26,7 +26,7 @@ app.use(cookieParser());
 
 const port = process.env.APP_PORT || 3008;
 
-app.set('trust proxy', 1);
+// app.set('trust proxy', 1);
 
 // mongoose.connect(`mongodb://${mongoDB.user}:${mongoDB.pass}@${mongoDB.host}:${mongoDB.port}/${mongoDB.name}${mongoDB.link}`)
 // mongoose.connect(`mongodb://${mongoDB.host}:${mongoDB.port}/${mongoDB.name}${mongoDB.link}`)
@@ -48,8 +48,8 @@ cookie: { maxAge: 1000 * 60 * 45 }
 }));
 
 const corsOptions = {
-  origin: 'http://localhost:3000',
-  credentials: true, // Allow credentials (cookies)
+  origin: ['http://localhost:3000', 'http://localhost:5173'],
+  credentials: true,
 };
 
 app.use(cors(corsOptions));

@@ -5,7 +5,7 @@ import logger from "../Configs/logger";
 interface JwtPayload {
     userId: string;
     email: string;
-    // Add other payload properties as needed
+    name: string;
   }
   
   const tokenVerify = (bearerToken: string): JwtPayload | null => {
